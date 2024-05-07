@@ -1,40 +1,69 @@
-alert("Bienvenido al calculador de gastos e ingresos");
+alert("bienvenido al calculador de gastos");
+
+const misGastos=[];
+
+class Gastos{
+    constructor(nombreGasto,monto){
+        this.nombreGasto= nombreGasto;
+        this.monto= monto;
+    };
+};
+
+function mostrarGastos(){
+    let gasto= "Gasto: \n";
+
+    if(misGastos==0){
+        alert("no hay gasto");
+    }else{
+        misGastos.forEach(el => {
+            gasto += el.nombreGasto + " $" + el.monto + "\n"
+        })
+        alert(gasto);
+    }
+   
+
+}
+
+function ingresarGasto(){
+    const nuevoNombreGasto= prompt("Ingrese el nombre del gasto");
+    const nuevoMonto= parseInt(prompt("Ingrese el monto del gasto"));
+
+    const nuevoGasto = new Gastos(nuevoNombreGasto,nuevoMonto);
+
+    misGastos.push(nuevoGasto);
+
+    alert("Ingresado el gasto " + nuevoNombreGasto + " por $" + nuevoMonto);
+}
 
 let opcion;
-let ingreso;
-let gasto;
-let total;
-let gastoTotal=0;
-let ingresoTotal=0;
 
+function sumaGastos(){
+    const sumatoriaGastos= misGastos.reduce((acumulador,el) => acumulador += el.monto, 0);
 
+    alert("el total de sus gastos es de $" + sumatoriaGastos);
+}
 
-do {
-    opcion = parseInt(prompt("Ingrese la opcion que quiera: \n\n1. Ingresar gasto \n2. Ingresar ingreso \n3. calcular el total \n0.Salir"));
+do{
+
+    opcion= parseInt(prompt("Ingrese la opcion: \n\n1.Ingresar gasto \n2.Mostrar gastos \n3.Calcular total del gasto \n0.Salir"));
     switch (opcion) {
         case 1:
-            gasto = parseInt(prompt("Ingrese el gasto hecho: "));
-            gastoTotal = gastoTotal + gasto;
-            alert("Su gasto es de: " + gastoTotal);
+            ingresarGasto();
             break;
         case 2:
-            ingreso = parseInt(prompt("Ingrese el gasto hecho: "));
-            ingresoTotal = ingresoTotal + ingreso;
-            alert("Su ingreso es de: " + ingresoTotal);
+            mostrarGastos();
             break;
         case 3:
-            total = ingresoTotal - gastoTotal;
-            alert("El resultado entre el ingreso y el gasto es de: " + total);
-            ingresosBuenosMalos(total);
+            sumaGastos();
+            break;
+        case 0:
+            alert("nos vemos luego");
+            break;
+    
+        default:
+            alert("Error al elegir la opcion");
             break;
     }
-} while (opcion != 0);
 
 
-function ingresosBuenosMalos(total){
-    if(total>=0){
-        alert("Estas ATR");
-    }else{
-        alert("estas en bancarrota");
-    }
-}
+}while(opcion!=0);
