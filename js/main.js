@@ -1,69 +1,51 @@
-alert("bienvenido al calculador de gastos");
+let gastos = [];
 
-const misGastos=[];
-
-class Gastos{
-    constructor(nombreGasto,monto){
-        this.nombreGasto= nombreGasto;
-        this.monto= monto;
-    };
-};
-
-function mostrarGastos(){
-    let gasto= "Gasto: \n";
-
-    if(misGastos==0){
-        alert("no hay gasto");
-    }else{
-        misGastos.forEach(el => {
-            gasto += el.nombreGasto + " $" + el.monto + "\n"
-        })
-        alert(gasto);
+function cargarGastos() {
+    const gastosGuardados = localStorage.getItem('gastos');
+    if (gastosGuardados) {
+        gastos = JSON.parse(gastosGuardados);
+        mostrarGastos();
+        calcularTotal();
     }
-   
-
 }
 
-function ingresarGasto(){
-    const nuevoNombreGasto= prompt("Ingrese el nombre del gasto");
-    const nuevoMonto= parseInt(prompt("Ingrese el monto del gasto"));
 
-    const nuevoGasto = new Gastos(nuevoNombreGasto,nuevoMonto);
+function agregarGasto() {
+    const nombre = document.getElementById('nombre').value;
+    const monto = parseFloat(document.getElementById('monto').value);
 
-    misGastos.push(nuevoGasto);
+    if (nombre && !isNaN(monto)) {
+        const gasto = {
+            nombre: nombre,
+            monto: monto
+        };
 
-    alert("Ingresado el gasto " + nuevoNombreGasto + " por $" + nuevoMonto);
-}
+        gastos.push(gasto);
 
-let opcion;
+        localStorage.setItem('gastos', JSON.stringify(gastos));
 
-function sumaGastos(){
-    const sumatoriaGastos= misGastos.reduce((acumulador,el) => acumulador += el.monto, 0);
+        document.getElementById('nombre').value = '';
+        document.getElementById('monto').value = '';
 
-    alert("el total de sus gastos es de $" + sumatoriaGastos);
-}
-
-do{
-
-    opcion= parseInt(prompt("Ingrese la opcion: \n\n1.Ingresar gasto \n2.Mostrar gastos \n3.Calcular total del gasto \n0.Salir"));
-    switch (opcion) {
-        case 1:
-            ingresarGasto();
-            break;
-        case 2:
-            mostrarGastos();
-            break;
-        case 3:
-            sumaGastos();
-            break;
-        case 0:
-            alert("nos vemos luego");
-            break;
-    
-        default:
-            alert("Error al elegir la opcion");
-            break;
+        mostrarGastos();
+        calcularTotal();
+    } else {
+        alert('Por favor, ingrese un nombre y un monto vÃ¡lido.');
     }
+}
 
+function mostrarGastos() {
+    const listaGastos = document.getElementById('listaGastos');
+    listaGastos.innerHTML = '';
 
-}while(opcion!=0);
+    gastos.forEach(gasto => {
+        const li = document.createElement('li');
+        li.textContent = `${gasto.nombre}: $${gasto.monto}`;
+        listaGastos.appendChild(li);
+    });
+}
+
+function calcularTotal() {
+    const total = gastos.reduce((sum, gasto) => sum + gasto.monto, 0);
+    document.getElementById('totalGastos').textContent = `$${total}`;
+}
